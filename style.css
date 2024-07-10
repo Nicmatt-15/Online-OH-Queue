@@ -1,0 +1,159 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#loginContainer {
+    background-color: #fff;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 0px;
+    padding-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#loginContainer h2,
+#loginContainer .login-submit-input {
+    margin-block: 0.83em;
+}
+
+#loginContainer form,
+#myModal form {
+    display: flex;
+    flex-direction: column;
+}
+
+#loginContainer .login-submit-input,
+#myModal .information-submit-input {
+    align-self: center;
+}
+
+#loginContainer input[type="text"],
+#loginContainer input[type="password"],
+#myModal input[type="text"],
+#myModal select {
+    width: auto;
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#loginContainer input[type="submit"],
+#myModal input[type="submit"] {
+    width: auto;
+    padding: 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#loginContainer input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* STATUS PAGE */
+
+#statusContainer {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#statusContainer h1 {
+    margin: 0 0 20px;
+}
+
+#statusContainer button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+#statusContainer button:hover {
+    background-color: #0056b3;
+}
+
+#studentQueue,
+#taAvailable {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+#studentQueue h2,
+#taAvailable h2 {
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+ol {
+    padding-left: 20px;
+}
+
+ol li {
+    margin: 5px 0;
+}
