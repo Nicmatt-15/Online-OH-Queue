@@ -60,7 +60,7 @@ questionForm.addEventListener("submit", () => {
     const studentClass = document.querySelector("#class").value;
     const questionType = document.querySelector("#questionType").value;
     const questionContent = document.querySelector("#questionContent").value;
-    
+
     // Log the form data to the console (or handle it as needed)
     console.log('Form submitted!');
     console.log('Student class:', studentClass);
@@ -70,3 +70,18 @@ questionForm.addEventListener("submit", () => {
     closeModal();
     openStatus();
 })
+
+/*
+This code is for dark mode and light mode
+*/
+let darkModeButton = document.querySelector("#darkModeButton");
+let lightModeButton = document.querySelector("#lightModeButton");
+
+darkModeButton.addEventListener("click", () => {
+    console.log("hey");
+    document.body.classList.add("darkmode");
+});
+
+lightModeButton.addEventListener("click", () => {
+    document.body.classList.remove("darkmode");
+});

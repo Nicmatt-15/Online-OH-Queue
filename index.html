@@ -7,91 +7,142 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loginContainer">
-        <h2>Login</h2>
-        <form id="loginForm" action="/login" method="post">
-            <div class="login-name-label">
-                <label for="username">Username</label>
-            </div>
-            <div class="login-name-input">
-                <input type="text" id="username" name="username" required>    
-            </div>
-            <div class="login-password-label">
-                <label for="password">Password</label>
-            </div>
-            <div class="login-password-input">
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="login-submit-input">
-                <input type="submit" value="Login">
-            </div>
-        </form>
-    </div>
-
-    <!-- Modal Structure -->
-    <div id="myModal" class="modal" hidden>
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h1>Office Hour Information</h1>
-            <form id="questionForm">
-                <div class="information-class-label">
-                    <label for="class">Class:</label>
+    <header>
+        <button id="darkModeButton" class="svg-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 -250 1024 1024"><path d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216 88.68 0 166.73-51.57 200-128-26.39 11.49-57.38 16-88 16-119.29 0-216-96.71-216-216z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
+        </button>
+        <button id="lightModeButton" class="svg-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 -250 1024 1024"><path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94"/><circle cx="256" cy="256" r="80" fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></svg>
+        </button>
+        <button id="profileButton" class="svg-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 1024 1024">
+                <circle cx="512" cy="512" r="200" stroke-width="16" fill="none"/>
+                <text x="50%" y="50%" text-anchor="middle" dy=".35em" font-size="200" font-family="Arial">A</text>
+            </svg>
+        </button>
+    </header>
+    <div id="modalAndContainer">
+        <div id="loginContainer">
+            <h2>Login</h2>
+            <form id="loginForm" action="/login" method="post">
+                <div class="login-name-label">
+                    <label for="username">Username</label>
                 </div>
-                <div class="information-class-input">
-                    <select id="class" name="class">
-                        <option value="" disabled selected>Select an option</option>
-                        <option value="121">CSE 121</option>
-                        <option value="122">CSE 122</option>
-                        <option value="123">CSE 123</option>
-                    </select>
+                <div class="login-name-input">
+                    <input type="text" id="username" name="username" required>
                 </div>
-                <div class="information-qtype-label">
-                    <label for="questionType">Question Type:</label>
+                <div class="login-password-label">
+                    <label for="password">Password</label>
                 </div>
-                <div class="information-qtype-input">
-                    <select id="questionType" name="questionType">
-                        <option value="" disabled selected>Select an option</option>
-                        <option value="cp">Creative Project</option>
-                        <option value="pa">Programming Assignment</option>
-                        <option value="qf">Quiz / Final Exam</option>
-                        <option value="sp">Section Problems</option>
-                        <option value="lc">Lecture Content</option>
-                        <option value="cl">Course Logistic</option>
-                    </select>
+                <div class="login-password-input">
+                    <input type="password" id="password" name="password" required>
                 </div>
-                <div class="information-qcontent-label">
-                    <label for="questionContent">Your Question:</label>
-                </div>
-                <div class="information-qcontent-input">
-                    <input type="text" id="questionContent" name="questionContent" required>
-                </div>
-                <div class="information-submit-input">
-                    <input type="submit" value="Join Office Hour">
+                <div class="login-submit-input">
+                    <input type="submit" value="Login">
                 </div>
             </form>
         </div>
-    </div>
 
-    <!-- Main OH Page-->
-    <div id="statusContainer" hidden>
-        <h1>Welcome to CSE 12x Office Hour</h1>
-        <button onclick="openModal()">Join Office Hour</button>
-        <div id="studentQueue">
-            <h2>Student Queue</h2>
-            <ol>
-                <li>Jasmine Chi</li>
-                <li>Miya Natsuhara</li>
-            </ol>
+        <!-- Modal Structure -->
+        <div id="myModal" class="modal" hidden>
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h1>Office Hour Information</h1>
+                <form id="questionForm">
+                    <div class="information-class-label">
+                        <label for="class">Class:</label>
+                    </div>
+                    <div class="information-class-input">
+                        <select id="class" name="class">
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="121">CSE 121</option>
+                            <option value="122">CSE 122</option>
+                            <option value="123">CSE 123</option>
+                        </select>
+                    </div>
+                    <div class="information-qtype-label">
+                        <label for="questionType">Question Type:</label>
+                    </div>
+                    <div class="information-qtype-input">
+                        <select id="questionType" name="questionType">
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="cp">Creative Project</option>
+                            <option value="pa">Programming Assignment</option>
+                            <option value="qf">Quiz / Final Exam</option>
+                            <option value="sp">Section Problems</option>
+                            <option value="lc">Lecture Content</option>
+                            <option value="cl">Course Logistic</option>
+                        </select>
+                    </div>
+                    <div class="information-qcontent-label">
+                        <label for="questionContent">Your Question:</label>
+                    </div>
+                    <div class="information-qcontent-input">
+                        <input type="text" id="questionContent" name="questionContent" required>
+                    </div>
+                    <div class="information-submit-input">
+                        <input type="submit" value="Join Office Hour">
+                    </div>
+                </form>
+            </div>
         </div>
-        <div id="taAvailable">
-            <h2>TA Available</h2>
-            <ol>
-                <li>Nicolas Matthew Suhardi</li>
-                <li>Brett Wortzman</li>
-            </ol>
+
+        <!-- Main OH Page-->
+        <div id="statusContainer" hidden>
+            <h1>Welcome to CSE 12x Office Hour</h1>
+            <button onclick="openModal()">Join Office Hour</button>
+            <div id="studentQueue">
+                <h2>Student Queue</h2>
+                <table>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                        <th>Wait Time</th>
+                    </tr>
+                    <tr>
+                        <td>Jasmine Chi</td>
+                        <td>Being Helped</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Miya Natsuhara</td>
+                        <td>Waiting</td>
+                        <td>00:03:45</td>
+                    </tr>
+                </table>
+                <h3>There are <span id="personWaiting">1</span> person waiting ahead of you to be helped.</h3>
+            </div>
+            <div id="taAvailable">
+                <h2>TA Available</h2>
+                <table>
+                    <tr>
+                        <th>Staff Name</th>
+                        <th>Status</th>
+                        <th>Average Wait Time</th>
+                        <th>Available Until</th>
+                    </tr>
+                    <tr>
+                        <td>Nicolas Suhardi</td>
+                        <td>Available</td>
+                        <td>00:00:00</td>
+                        <td>14:00:00</td>
+                    </tr>
+                    <tr>
+                        <td>Brett Wortzman</td>
+                        <td>Helping</td>
+                        <td>00:10:23</td>
+                        <td>14:30:00</td>
+                    </tr>
+                    <tr>
+                        <td>Jonus Li</td>
+                        <td>Available</td>
+                        <td>00:00:00</td>
+                        <td>15:00:00</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
-
     <script src="index.js"></script>
 </body>
 </html>
