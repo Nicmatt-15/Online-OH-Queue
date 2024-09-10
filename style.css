@@ -47,6 +47,10 @@ body.darkmode .ionicon {
     display: block;
 }
 
+#profileButton[hidden] {
+    display: none !important;
+}
+
 #modalAndContainer {
     display: flex;
     justify-content: center;

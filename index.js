@@ -1,9 +1,17 @@
+/* Login Related Elements */
 let loginContainer = document.querySelector("#loginContainer");
 let loginForm = document.querySelector("#loginForm");
 let modal = document.querySelector("#myModal");
+
+/* Modal Related Elements */
 let questionForm = document.querySelector("#questionForm");
 let statusContainer = document.querySelector("#statusContainer");
 
+/* Profile Button Related Elements */
+let profileButton = document.querySelector("#profileButton");
+let profileButtonText = document.querySelector("#profileButton svg text");
+
+/* This part of the code handles the login submission form */
 loginForm.addEventListener("submit", () => {
     // Prevent the default form submission
     event.preventDefault();
@@ -19,6 +27,7 @@ loginForm.addEventListener("submit", () => {
 
     closeLogin();
     openStatus();
+    showProfileButton(username.substring(0, 1));
 })
 
 function openLogin() {
@@ -27,6 +36,11 @@ function openLogin() {
 
 function closeLogin() {
     loginContainer.style.display = 'none';
+}
+
+function showProfileButton(userFirstLetter) {
+    profileButton.removeAttribute("hidden");
+    profileButtonText.textContent = userFirstLetter;
 }
 
 function openModal() {
