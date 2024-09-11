@@ -1,3 +1,8 @@
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
+
 body {
     background-image: url("img/lightbg.webp");
     background-size: cover;
@@ -47,17 +52,50 @@ body.darkmode .ionicon {
     display: block;
 }
 
-#profileButton[hidden] {
-    display: none !important;
+.hidden {
+    position: absolute;
+    visibility: hidden;
 }
 
 #modalAndContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 85vh;
     font-family: Arial, sans-serif;
 }
+
+#authContainer {
+    width: 100%;
+    max-width: 400px; /* Adjust this to your desired form width */
+    margin: 0 auto;
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tab-buttons button {
+    flex: 1; /* Each button will take up an equal share of space */
+    background-color: white;
+    border-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+body.darkmode .tab-buttons button {
+    background-color: black;
+    color: white;
+}
+
+.tab-buttons button:hover,
+body.darkmode .tab-buttons button:hover {
+    color: red;
+}
+
 
 button {
     padding: 10px 20px;
@@ -76,7 +114,10 @@ th, td {
     text-align: left;
 }
 
-#loginContainer {
+/* This part is related to log-in
+and sign-up container */
+#loginContainer,
+#signupContainer {
     background-color: #fff;
     padding-left: 40px;
     padding-right: 40px;
@@ -90,28 +131,38 @@ th, td {
     align-items: center;
 }
 
-body.darkmode #loginContainer {
+body.darkmode #loginContainer,
+body.darkmode #signupContainer {
     background-color: black;
+    border-color: white;
+    border: solid 2px white;
 }
 
 #loginContainer h2,
-#loginContainer .login-submit-input {
+#signupContainer h2,
+#loginContainer .login-submit-input,
+#signupContainer .signup-submit-input {
     margin-block: 0.83em;
 }
 
 #loginContainer form,
+#signupContainer form,
 #myModal form {
     display: flex;
     flex-direction: column;
 }
 
 #loginContainer .login-submit-input,
+#signupContainer .signup-submit-input,
 #myModal .information-submit-input {
     align-self: center;
 }
 
 #loginContainer input[type="text"],
 #loginContainer input[type="password"],
+#signupContainer input[type="text"],
+#signupContainer input[type="password"],
+#signupContainer input[type="number"],
 #myModal input[type="text"],
 #myModal select {
     width: auto;
@@ -122,6 +173,7 @@ body.darkmode #loginContainer {
 }
 
 #loginContainer input[type="submit"],
+#signupContainer input[type="submit"],
 #myModal input[type="submit"] {
     width: auto;
     padding: 20px;
@@ -132,12 +184,14 @@ body.darkmode #loginContainer {
     cursor: pointer;
 }
 
-#loginContainer input[type="submit"]:hover {
+#loginContainer input[type="submit"]:hover,
+#signupContainer input[type="submit"]:hover
+{
     background-color: #0056b3;
 }
 
+/* This is for other modals */
 .modal {
-    display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
@@ -218,11 +272,16 @@ body.darkmode #statusContainer {
     background-color: #0056b3;
 }
 
+#statusStatContainer {
+    display: flex;
+    flex-direction: row;
+}
+
 #studentQueue,
 #taAvailable {
     background-color: #f9f9f9;
     padding: 15px;
-    margin: 20px 0;
+    margin: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
