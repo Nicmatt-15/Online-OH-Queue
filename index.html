@@ -36,6 +36,8 @@
                     <div class="login-email-input">
                         <input type="text" id="loginEmail" name="email" required>
                     </div>
+                    <div class="login-email-warning">
+                    </div>
                     <div class="login-password-label">
                         <label for="password">Password</label>
                     </div>
@@ -43,7 +45,10 @@
                         <input type="password" id="loginPassword" name="password" required>
                     </div>
                     <div class="login-password-reveal">
-                        <input type="checkbox" id="loginShowPassword"> Show Password
+                        <input type="checkbox" id="loginShowPassword">Show Password
+                    </div>
+                    <div class="login-staff-toggle">
+                        <input type="checkbox" id="loginStaff">Staff Login
                     </div>
                     <div class="login-submit-input">
                         <input type="submit" value="Login">
@@ -71,6 +76,8 @@
                     </div>
                     <div class="signup-email-input">
                         <input type="text" id="signupEmail" name="email" required>
+                    </div>
+                    <div class="signup-email-warning">
                     </div>
                     <div class="signup-password-label">
                         <label for="password">Password</label>
@@ -154,6 +161,6 @@
             </div>
         </div>
     </div>
-    <script src="index.js"></script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

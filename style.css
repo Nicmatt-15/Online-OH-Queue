@@ -190,6 +190,12 @@ body.darkmode #signupContainer {
     background-color: #0056b3;
 }
 
+.login-email-warning,
+.signup-email-warning {
+    color: red;
+    margin-bottom: 10px;
+}
+
 /* This is for other modals */
 .modal {
     position: fixed; /* Stay in place */

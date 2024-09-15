@@ -1,8 +1,16 @@
+/* Import */
+import FetchWrapper from "./fetch-wrapper.js";
+
+/* For any communication with our backend*/
+const BASE_URL = "http://localhost:3000/";
+const API = new FetchWrapper(BASE_URL);
+
 /* Login/Sign-up Related Elements */
 let authContainer = document.querySelector("#authContainer");
 let loginContainer = document.querySelector("#loginContainer");
 let signupContainer = document.querySelector("#signupContainer");
 let loginForm = document.querySelector("#loginForm");
+let signupForm = document.querySelector("#signupForm");
 let modal = document.querySelector("#myModal");
 
 /* Modal Related Elements */
@@ -37,11 +45,15 @@ loginForm.addEventListener("submit", () => {
     // Access form data
     const loginEmail = document.querySelector("#loginEmail").value;
     const loginPassword = document.querySelector("#loginPassword").value;
+    const loginStaff = document.querySelector("#loginStaff").checked;
 
-    // Log the form data to the console (or handle it as needed)
-    console.log('Form submitted!');
-    console.log('Email:', loginEmail);
-    console.log('Password:', loginPassword);
+    API.post("api/signin/", {
+        loginEmail: loginEmail,
+        loginPassword: loginPassword,
+        loginStaff: loginStaff
+    }).then(data => {
+        console.log(data);
+    });
 
     closeAuth();
     openStatus();
@@ -92,7 +104,64 @@ signupPasswordCheckbox.addEventListener("click", () => {
     }
 })
 
-/* This part of the code handles opening and closing modal 
+/* This part handles verifying that the user input
+email (both login and signup) is a valid email address
+using regex */
+let loginEmailInput = document.querySelector("#loginEmail");
+let signupEmailInput = document.querySelector("#signupEmail");
+let loginEmailWarning = document.querySelector(".login-email-warning");
+let signupEmailWarning = document.querySelector(".signup-email-warning");
+
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+loginEmailInput.addEventListener("change", () => {
+    const userInput = loginEmailInput.value;
+
+    if (validateEmail(userInput)) {
+        loginEmailWarning.innerHTML = "";
+    } else {
+        loginEmailWarning.innerHTML = "<b>Email format is invalid!<b>";
+    }
+});
+
+signupEmailInput.addEventListener("change", () => {
+    const userInput = signupEmailInput.value;
+
+    if (validateEmail(userInput)) {
+        signupEmailWarning.innerHTML = "";
+    } else {
+        signupEmailWarning.innerHTML = "<b>Email format is invalid!<b>";
+    }
+});
+
+/* This part of the code handles API call for sign-up */
+let signupNameForm = document.querySelector("#signupName");
+let signupStudentnumForm = document.querySelector("#signupStudentnum");
+let signupEmailForm = document.querySelector("#signupEmail");
+let signupPasswordForm = document.querySelector("#signupPassword");
+
+signupForm.addEventListener("submit", () => {
+    event.preventDefault();
+
+    const signupName = signupNameForm.value;
+    const signupStudentnum = signupStudentnumForm.value;
+    const signupEmail = signupEmailForm.value;
+    const signupPassword = signupPasswordForm.value;
+
+    API.post("api/signup/", {
+        signupName: signupName,
+        signupStudentnum: signupStudentnum,
+        signupEmail: signupEmail,
+        signupPassword: signupPassword
+    }).then(data => {
+        console.log(data);
+    });
+});
+
+/* This part of the code handles opening and closing modal
 when student clicks join office hour*/
 let joinOHButton = document.querySelector("#openModalButton")
 function openModal() {
