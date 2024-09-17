@@ -52,20 +52,51 @@ loginForm.addEventListener("submit", () => {
         loginPassword: loginPassword,
         loginStaff: loginStaff
     }).then(data => {
-        console.log(data);
+        closeAuth(data, loginEmail);
     });
-
-    closeAuth();
-    openStatus();
-    showProfileButton(loginEmail.substring(0, 1));
 })
 
 function openLogin() {
     authContainer.classList.remove("hidden");
 }
 
-function closeAuth() {
-    authContainer.classList.add("hidden");
+/* Close auth will only be used for login. Sign-up
+will never trigger close auth.
+
+We will decide whether to actually close the auth page
+and open the stats page depending on the response from the
+server side.
+*/
+function closeAuth(data, loginEmail) {
+    console.log(data);
+    if (data.ok) {
+        authContainer.classList.add("hidden");
+
+        openStatus();
+        showProfileButton(loginEmail.substring(0, 1));
+    } else if (data.status === 401) {
+        window.alert("Sign-in failed: Incorrect password!");
+        clearLoginArea();
+    } else if (data.status === 404) {
+        window.alert("Sign-in failed: User not found!");
+        clearLoginArea();
+    } else {
+        window.alert("Server Error: Please Try Again Later!")
+        clearLoginArea();
+    }
+}
+
+function clearLoginArea() {
+    const loginEmailBox = document.querySelector("#loginEmail");
+    const loginPasswordBox = document.querySelector("#loginPassword");
+    const loginShowPasswordCheck = document.querySelector("#loginShowPassword");
+    const loginStaffCheck = document.querySelector("#loginStaff");
+
+    loginEmailBox.value = "";
+    loginPasswordBox.value = "";
+    loginShowPasswordCheck.checked = false;
+    loginStaffCheck.checked = false;
+    loginPasswordBox.type = "password";
 }
 
 function showProfileButton(userFirstLetter) {
@@ -157,9 +188,32 @@ signupForm.addEventListener("submit", () => {
         signupEmail: signupEmail,
         signupPassword: signupPassword
     }).then(data => {
-        console.log(data);
+        if (data.ok) {
+            window.alert("Sign-up Successful: Please Check your Email!");
+        } else if (data.status === 409) {
+            window.alert("Sign-up Failed: User Already Existed!");
+        } else {
+            window.alert("Server Error: Please Try Again Later!");
+        }
+
+        clearSignupArea();
     });
 });
+
+function clearSignupArea() {
+    const signupNameForm = document.querySelector("#signupName");
+    const signupStudentnumForm = document.querySelector("#signupStudentnum");
+    const signupEmailForm = document.querySelector("#signupEmail");
+    const signupPasswordForm = document.querySelector("#signupPassword");
+    const signupPasswordCheck = document.querySelector("#signupShowPassword");
+
+    signupNameForm.value = "";
+    signupStudentnumForm.value = "";
+    signupEmailForm.value = "";
+    signupPasswordForm.value = "";
+    signupPasswordCheck.checked = false;
+    signupPasswordForm.type = "password";
+}
 
 /* This part of the code handles opening and closing modal
 when student clicks join office hour*/
