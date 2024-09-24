@@ -15,7 +15,8 @@ let modal = document.querySelector("#myModal");
 
 /* Modal Related Elements */
 let questionForm = document.querySelector("#questionForm");
-let statusContainer = document.querySelector("#statusContainer");
+let studentStatusContainer = document.querySelector("#studentStatusContainer");
+let staffStatusContainer = document.querySelector("#staffStatusContainer");
 
 /* Profile Button Related Elements */
 let profileButton = document.querySelector("#profileButton");
@@ -52,7 +53,7 @@ loginForm.addEventListener("submit", () => {
         loginPassword: loginPassword,
         loginStaff: loginStaff
     }).then(data => {
-        closeAuth(data, loginEmail);
+        closeAuth(data, loginEmail, loginStaff);
     });
 })
 
@@ -67,12 +68,12 @@ We will decide whether to actually close the auth page
 and open the stats page depending on the response from the
 server side.
 */
-function closeAuth(data, loginEmail) {
-    console.log(data);
+function closeAuth(data, loginEmail, isStaff) {
+    console.log(data); // TODO
     if (data.ok) {
         authContainer.classList.add("hidden");
 
-        openStatus();
+        openStatus(isStaff);
         showProfileButton(loginEmail.substring(0, 1));
     } else if (data.status === 401) {
         window.alert("Sign-in failed: Incorrect password!");
@@ -104,12 +105,22 @@ function showProfileButton(userFirstLetter) {
     profileButtonText.textContent = userFirstLetter;
 }
 
-function openStatus() {
-    statusContainer.classList.remove("hidden");
+function openStatus(isStaff) {
+    if (isStaff) {
+        console.log("enter here"); // TODO
+        console.log(staffStatusContainer);
+        staffStatusContainer.classList.remove("hidden");
+    } else {
+        studentStatusContainer.classList.remove("hidden");
+    }
 }
 
-function closeStatus() {
-    statusContainer.classList.add("hidden");
+function closeStatus(isStaff) {
+    if (isStaff) {
+        staffStatusContainer.classList.add("hidden");
+    } else {
+        studentStatusContainer.classList.add("hidden");
+    }
 }
 
 /* This part of the code handles the checkbox revealing

@@ -114,12 +114,12 @@
             </div>
         </div>
 
-        <!-- Main OH Page-->
-        <div id="statusContainer" class="hidden">
+        <!-- Student Main OH Page-->
+        <div id="studentStatusContainer" class="hidden">
             <h1>Welcome to CSE 12x Office Hour</h1>
             <button id="openModalButton">Join Office Hour</button>
-            <div id="statusStatContainer">
-                <div id="studentQueue">
+            <div class="status-stat-container">
+                <div id="studentSideQueue">
                     <h2>Student Queue</h2>
                     <table>
                         <tr>
@@ -131,9 +131,56 @@
                             <th>Finish Time</th>
                         </tr>
                     </table>
-                    <h3>There are <span id="personWaiting">1</span> person waiting ahead of you to be helped.</h3>
+                    <h3>There are <span class="person-waiting">1</span> person waiting ahead of you to be helped.</h3>
                 </div>
-                <div id="taAvailable">
+                <div class="ta-available">
+                    <h2>TA Available</h2>
+                    <table>
+                        <tr>
+                            <th>Staff Name</th>
+                            <th>Status</th>
+                            <th>Available Until</th>
+                        </tr>
+                        <tr>
+                            <td>Nicolas Suhardi</td>
+                            <td>Available</td>
+                            <td>14:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Brett Wortzman</td>
+                            <td>Helping</td>
+                            <td>14:30:00</td>
+                        </tr>
+                        <tr>
+                            <td>Jonus Li</td>
+                            <td>Available</td>
+                            <td>15:00:00</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Main OH Page-->
+        <div id="staffStatusContainer" class="hidden">
+            <h1>Welcome to CSE 12x Office Hour</h1>
+            <div id="status-stat-container">
+                <div id="staffSideQueue">
+                    <h2>Student Queue</h2>
+                    <table>
+                        <tr>
+                            <th>Queue #</th>
+                            <th>Student Number</th>
+                            <th>Student Name</th>
+                            <th>Request Time</th>
+                            <th>Assigned Time</th>
+                            <th>Finish Time</th>
+                            <th>Action Button</th>
+                        </tr>
+                    </table>
+                    <h3>There are <span class="person-waiting">1</span> person waiting in the queue.</h3>
+                </div>
+                <div class="ta-available">
                     <h2>TA Available</h2>
                     <table>
                         <tr>
@@ -161,6 +208,7 @@
             </div>
         </div>
     </div>
+
     <script type="module" src="index.js"></script>
 </body>
 </html>
