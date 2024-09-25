@@ -6,26 +6,25 @@ const BASE_URL = "http://localhost:3000/";
 const API = new FetchWrapper(BASE_URL);
 
 /* Login/Sign-up Related Elements */
-let authContainer = document.querySelector("#authContainer");
-let loginContainer = document.querySelector("#loginContainer");
-let signupContainer = document.querySelector("#signupContainer");
-let loginForm = document.querySelector("#loginForm");
-let signupForm = document.querySelector("#signupForm");
-let modal = document.querySelector("#myModal");
+const authContainer = document.querySelector("#authContainer");
+const loginContainer = document.querySelector("#loginContainer");
+const signupContainer = document.querySelector("#signupContainer");
+const loginForm = document.querySelector("#loginForm");
+const signupForm = document.querySelector("#signupForm");
+const modal = document.querySelector("#myModal");
 
-/* Modal Related Elements */
-let questionForm = document.querySelector("#questionForm");
-let studentStatusContainer = document.querySelector("#studentStatusContainer");
-let staffStatusContainer = document.querySelector("#staffStatusContainer");
+/* Status Page Related Elements */
+const studentStatusContainer = document.querySelector("#studentStatusContainer");
+const staffStatusContainer = document.querySelector("#staffStatusContainer");
 
 /* Profile Button Related Elements */
-let profileButton = document.querySelector("#profileButton");
-let profileButtonText = document.querySelector("#profileButton svg text");
+const profileButton = document.querySelector("#profileButton");
+const profileButtonText = document.querySelector("#profileButton svg text");
 
 /* This part of the code handles the toggling between
 login and signup form*/
-let loginTabButton = document.querySelector("#signinTab");
-let signupTabButton = document.querySelector("#signupTab");
+const loginTabButton = document.querySelector("#signinTab");
+const signupTabButton = document.querySelector("#signupTab");
 
 loginTabButton.addEventListener("click", () => {
     loginContainer.classList.remove("hidden");
@@ -72,6 +71,12 @@ function closeAuth(data, loginEmail, isStaff) {
     console.log(data); // TODO
     if (data.ok) {
         authContainer.classList.add("hidden");
+
+        // Save the user email and staff/student status in the local storage
+        // so that we can use it as a data to send
+        // when the user make request (submitting question
+        // as student or helping student as staff)
+        localStorage.setItem("userEmail", loginEmail);
 
         openStatus(isStaff);
         showProfileButton(loginEmail.substring(0, 1));
@@ -125,10 +130,10 @@ function closeStatus(isStaff) {
 
 /* This part of the code handles the checkbox revealing
 and unrevealing the password textbox */
-let loginPasswordInput = document.querySelector("#loginPassword");
-let signupPasswordInput = document.querySelector("#signupPassword");
-let loginPasswordCheckbox = document.querySelector("#loginShowPassword");
-let signupPasswordCheckbox = document.querySelector("#signupShowPassword");
+const loginPasswordInput = document.querySelector("#loginPassword");
+const signupPasswordInput = document.querySelector("#signupPassword");
+const loginPasswordCheckbox = document.querySelector("#loginShowPassword");
+const signupPasswordCheckbox = document.querySelector("#signupShowPassword");
 
 loginPasswordCheckbox.addEventListener("click", () => {
     if (loginPasswordInput.type === "password") {
@@ -149,10 +154,10 @@ signupPasswordCheckbox.addEventListener("click", () => {
 /* This part handles verifying that the user input
 email (both login and signup) is a valid email address
 using regex */
-let loginEmailInput = document.querySelector("#loginEmail");
-let signupEmailInput = document.querySelector("#signupEmail");
-let loginEmailWarning = document.querySelector(".login-email-warning");
-let signupEmailWarning = document.querySelector(".signup-email-warning");
+const loginEmailInput = document.querySelector("#loginEmail");
+const signupEmailInput = document.querySelector("#signupEmail");
+const loginEmailWarning = document.querySelector(".login-email-warning");
+const signupEmailWarning = document.querySelector(".signup-email-warning");
 
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -180,10 +185,10 @@ signupEmailInput.addEventListener("change", () => {
 });
 
 /* This part of the code handles API call for sign-up */
-let signupNameForm = document.querySelector("#signupName");
-let signupStudentnumForm = document.querySelector("#signupStudentnum");
-let signupEmailForm = document.querySelector("#signupEmail");
-let signupPasswordForm = document.querySelector("#signupPassword");
+const signupNameForm = document.querySelector("#signupName");
+const signupStudentnumForm = document.querySelector("#signupStudentnum");
+const signupEmailForm = document.querySelector("#signupEmail");
+const signupPasswordForm = document.querySelector("#signupPassword");
 
 signupForm.addEventListener("submit", () => {
     event.preventDefault();
@@ -228,7 +233,7 @@ function clearSignupArea() {
 
 /* This part of the code handles opening and closing modal
 when student clicks join office hour*/
-let joinOHButton = document.querySelector("#openModalButton")
+const joinOHButton = document.querySelector("#openModalButton")
 function openModal() {
     modal.classList.remove("hidden");
 }
@@ -249,30 +254,11 @@ window.onclick = function(event) {
     }
 }
 
-questionForm.addEventListener("submit", () => {
-    // Prevent the default form submission
-    event.preventDefault();
-
-    // Access form data
-    const studentClass = document.querySelector("#class").value;
-    const questionType = document.querySelector("#questionType").value;
-    const questionContent = document.querySelector("#questionContent").value;
-
-    // Log the form data to the console (or handle it as needed)
-    console.log('Form submitted!');
-    console.log('Student class:', studentClass);
-    console.log('Question Type:', questionType);
-    console.log('Question Content:', questionContent);
-
-    closeModal();
-    openStatus();
-})
-
 /*
 This code is for dark mode and light mode
 */
-let darkModeButton = document.querySelector("#darkModeButton");
-let lightModeButton = document.querySelector("#lightModeButton");
+const darkModeButton = document.querySelector("#darkModeButton");
+const lightModeButton = document.querySelector("#lightModeButton");
 
 darkModeButton.addEventListener("click", () => {
     console.log("hey");
@@ -281,4 +267,30 @@ darkModeButton.addEventListener("click", () => {
 
 lightModeButton.addEventListener("click", () => {
     document.body.classList.remove("darkmode");
+});
+
+/*
+This code is related to student submitting their
+question and sending that data to the backend
+*/
+const studentJoinForm = document.querySelector("#studentJoinForm");
+const studentQuestionContent = document.querySelector("#questionContent");
+
+studentJoinForm.addEventListener("submit", () => {
+    event.preventDefault();
+
+    const studentQuestion = studentQuestionContent.value;
+
+    closeModal();
+
+    API.post("api/joinqueue/", {
+        userEmail: localStorage.getItem("userEmail"),
+        studentQuestion: studentQuestion
+    }).then(data => {
+        if (data.ok) {
+            window.alert("Question submitted: You are now enrolled in the queue");
+        } else {
+            window.alert("Server Error: Please Try Again Later!");
+        }
+    });
 });
