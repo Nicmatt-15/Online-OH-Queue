@@ -102,6 +102,11 @@ button {
     font-size: 16px;
 }
 
+.table-container {
+    height: 42vh !important;
+    overflow-y: auto;
+}
+
 table {
     border: 1px solid black;
     border-collapse: collapse;

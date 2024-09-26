@@ -51,8 +51,8 @@ loginForm.addEventListener("submit", () => {
         loginEmail: loginEmail,
         loginPassword: loginPassword,
         loginStaff: loginStaff
-    }).then(data => {
-        closeAuth(data, loginEmail, loginStaff);
+    }).then(response => {
+        closeAuth(response, loginEmail, loginStaff);
     });
 })
 
@@ -67,9 +67,8 @@ We will decide whether to actually close the auth page
 and open the stats page depending on the response from the
 server side.
 */
-function closeAuth(data, loginEmail, isStaff) {
-    console.log(data); // TODO
-    if (data.ok) {
+function closeAuth(response, loginEmail, isStaff) {
+    if (response.ok) {
         authContainer.classList.add("hidden");
 
         // Save the user email and staff/student status in the local storage
@@ -80,10 +79,10 @@ function closeAuth(data, loginEmail, isStaff) {
 
         openStatus(isStaff);
         showProfileButton(loginEmail.substring(0, 1));
-    } else if (data.status === 401) {
+    } else if (response.status === 401) {
         window.alert("Sign-in failed: Incorrect password!");
         clearLoginArea();
-    } else if (data.status === 404) {
+    } else if (response.status === 404) {
         window.alert("Sign-in failed: User not found!");
         clearLoginArea();
     } else {
@@ -112,10 +111,15 @@ function showProfileButton(userFirstLetter) {
 
 function openStatus(isStaff) {
     if (isStaff) {
-        console.log("enter here"); // TODO
-        console.log(staffStatusContainer);
+        // TODO: Load queue for staff version
+
         staffStatusContainer.classList.remove("hidden");
     } else {
+        // Load the queue first (student version)
+        API.post("api/getqueue", {})
+        .then(response => response.json())
+        .then(data => updateQueueTable(data.queue));
+
         studentStatusContainer.classList.remove("hidden");
     }
 }
@@ -203,10 +207,10 @@ signupForm.addEventListener("submit", () => {
         signupStudentnum: signupStudentnum,
         signupEmail: signupEmail,
         signupPassword: signupPassword
-    }).then(data => {
-        if (data.ok) {
+    }).then(response => {
+        if (response.ok) {
             window.alert("Sign-up Successful: Please Check your Email!");
-        } else if (data.status === 409) {
+        } else if (response.status === 409) {
             window.alert("Sign-up Failed: User Already Existed!");
         } else {
             window.alert("Server Error: Please Try Again Later!");
@@ -286,11 +290,50 @@ studentJoinForm.addEventListener("submit", () => {
     API.post("api/joinqueue/", {
         userEmail: localStorage.getItem("userEmail"),
         studentQuestion: studentQuestion
-    }).then(data => {
-        if (data.ok) {
-            window.alert("Question submitted: You are now enrolled in the queue");
+    }).then(response => {
+        if (response.ok) {
+          return response.json();
         } else {
-            window.alert("Server Error: Please Try Again Later!");
+          throw new Error('Server Error');
         }
+    }).then(data => {
+        window.alert("Question submitted: You are now enrolled in the queue");
+        updateQueueTable(data.queue);
+    }).catch(error => {
+        window.alert("Server Error: Please Try Again Later!");
     });
 });
+
+function updateQueueTable(queueData) {
+    const studentSideQueueTable = document.querySelector("#studentSideQueueTable");
+
+    queueData.forEach(row => {
+        const newTableRow = createQueueTableRow(row);
+        studentSideQueueTable.appendChild(newTableRow);
+    });
+}
+
+// This function is used to create
+// one row of the queue table entry
+function createQueueTableRow(row) {
+    const newTableRow = document.createElement("tr");
+    const newTableRowData = [
+        row.queue_number,
+        row.student_number,
+        row.student_name,
+        row.request_time,
+        row.assign_time,
+        row.finish_time
+    ];
+
+    console.log(row);
+
+    for(let i = 0; i < 6; i++) {
+        const newRowCell = document.createElement("td");
+        newRowCell.textContent = newTableRowData[i];
+
+        newTableRow.appendChild(newRowCell);
+    }
+
+    return newTableRow;
+}
