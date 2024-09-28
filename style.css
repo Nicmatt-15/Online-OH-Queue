@@ -9,6 +9,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    font-family: Arial, sans-serif;
 }
 
 body.darkmode {
@@ -62,7 +63,6 @@ body.darkmode .ionicon {
     justify-content: center;
     align-items: center;
     height: 85vh;
-    font-family: Arial, sans-serif;
 }
 
 #authContainer {
@@ -165,6 +165,7 @@ body.darkmode #signupContainer {
 
 #loginContainer input[type="text"],
 #loginContainer input[type="password"],
+#loginContainer input[type="datetime-local"],
 #signupContainer input[type="text"],
 #signupContainer input[type="password"],
 #signupContainer input[type="number"],
@@ -267,7 +268,7 @@ body.darkmode #staffStatusContainer {
 }
 
 #studentStatusContainer h1,
-#staffStatusContainer {
+#staffStatusContainer h1 {
     margin: 0 0 20px;
 }
 
@@ -306,7 +307,7 @@ body.darkmode #staffStatusContainer {
 
 body.darkmode #studentSideQueue,
 body.darkmode #staffSideQueue,
-body.darkmode .ta-vailable {
+body.darkmode .ta-available {
     background-color: #262626;
 }
 

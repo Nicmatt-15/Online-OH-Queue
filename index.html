@@ -11,6 +11,7 @@
         <button id="darkModeButton" class="svg-button">
             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 -250 1024 1024"><path d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216 88.68 0 166.73-51.57 200-128-26.39 11.49-57.38 16-88 16-119.29 0-216-96.71-216-216z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
         </button>
+        <h1 id="utcTime"></h1>
         <button id="lightModeButton" class="svg-button">
             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 -250 1024 1024"><path fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94"/><circle cx="256" cy="256" r="80" fill="none" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></svg>
         </button>
@@ -24,7 +25,7 @@
     <div id="modalAndContainer">
         <div id="authContainer">
             <div class="tab-buttons">
-                <button id="signinTab">Sign In</button>
+                <button id="loginTab">Log In</button>
                 <button id="signupTab">Sign Up</button>
             </div>
             <div id="loginContainer">
@@ -43,6 +44,18 @@
                     </div>
                     <div class="login-password-input">
                         <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                    <div class="login-staff-start-time-label hidden">
+                        <label for="loginStaffStartTime">Shift Start Time</label>
+                    </div>
+                    <div class="login-staff-start-time hidden">
+                        <input type="datetime-local" id="loginStaffStartTime">
+                    </div>
+                    <div class="login-staff-end-time-label hidden">
+                        <label for="loginStaffEndTime">Shift End Time</label>
+                    </div>
+                    <div class="login-staff-end-time hidden">
+                        <input type="datetime-local" id="loginStaffEndTime">
                     </div>
                     <div class="login-password-reveal">
                         <input type="checkbox" id="loginShowPassword">Show Password
@@ -98,7 +111,7 @@
         <!-- Modal Structure -->
         <div id="myModal" class="modal hidden">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span id="closeModalX" class="close">&times;</span>
                 <h1>Office Hour Information</h1>
                 <form id="studentJoinForm">
                     <div class="information-qcontent-label">
@@ -133,30 +146,16 @@
                             </tr>
                         </table>
                     </div>
-                    <h3>There are <span class="person-waiting">1</span> person waiting ahead of you to be helped.</h3>
+                    <!-- <h3>There are <span class="person-waiting">1</span> person waiting ahead of you to be helped.</h3> -->
                 </div>
                 <div class="ta-available">
                     <h2>TA Available</h2>
-                    <table>
+                    <table id="studentAvailableTA">
                         <tr>
                             <th>Staff Name</th>
                             <th>Status</th>
-                            <th>Available Until</th>
-                        </tr>
-                        <tr>
-                            <td>Nicolas Suhardi</td>
-                            <td>Available</td>
-                            <td>14:00:00</td>
-                        </tr>
-                        <tr>
-                            <td>Brett Wortzman</td>
-                            <td>Helping</td>
-                            <td>14:30:00</td>
-                        </tr>
-                        <tr>
-                            <td>Jonus Li</td>
-                            <td>Available</td>
-                            <td>15:00:00</td>
+                            <th>Shift Start Time</th>
+                            <th>Shift End Time</th>
                         </tr>
                     </table>
                 </div>
@@ -166,7 +165,7 @@
         <!-- Staff Main OH Page-->
         <div id="staffStatusContainer" class="hidden">
             <h1>Welcome to CSE 12x Office Hour</h1>
-            <div id="status-stat-container">
+            <div class="status-stat-container">
                 <div id="staffSideQueue">
                     <h2>Student Queue</h2>
                     <div class="table-container">
@@ -178,34 +177,21 @@
                                 <th>Request Time</th>
                                 <th>Assigned Time</th>
                                 <th>Finish Time</th>
+                                <th>Question</th>
                                 <th>Action Button</th>
                             </tr>
                         </table>
                     </div>
-                    <h3>There are <span class="person-waiting">1</span> person waiting in the queue.</h3>
+                    <!-- <h3>There are <span class="person-waiting">1</span> person waiting in the queue.</h3> -->
                 </div>
                 <div class="ta-available">
                     <h2>TA Available</h2>
-                    <table>
+                    <table id="staffAvailableTA">
                         <tr>
                             <th>Staff Name</th>
                             <th>Status</th>
-                            <th>Available Until</th>
-                        </tr>
-                        <tr>
-                            <td>Nicolas Suhardi</td>
-                            <td>Available</td>
-                            <td>14:00:00</td>
-                        </tr>
-                        <tr>
-                            <td>Brett Wortzman</td>
-                            <td>Helping</td>
-                            <td>14:30:00</td>
-                        </tr>
-                        <tr>
-                            <td>Jonus Li</td>
-                            <td>Available</td>
-                            <td>15:00:00</td>
+                            <th>Shift Start Time</th>
+                            <th>Shift End Time</th>
                         </tr>
                     </table>
                 </div>
@@ -213,6 +199,7 @@
         </div>
     </div>
 
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script type="module" src="index.js"></script>
 </body>
 </html>

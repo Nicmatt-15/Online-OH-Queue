@@ -4,6 +4,7 @@ import FetchWrapper from "./fetch-wrapper.js";
 /* For any communication with our backend*/
 const BASE_URL = "http://localhost:3000/";
 const API = new FetchWrapper(BASE_URL);
+let socket;
 
 /* Login/Sign-up Related Elements */
 const authContainer = document.querySelector("#authContainer");
@@ -21,9 +22,23 @@ const staffStatusContainer = document.querySelector("#staffStatusContainer");
 const profileButton = document.querySelector("#profileButton");
 const profileButtonText = document.querySelector("#profileButton svg text");
 
+/* This part of the code handles displaying the auto updating
+UTC time in the page header */
+function updateUTCTime() {
+    const now = new Date();
+    const utcTime = now.toUTCString();
+    document.querySelector('#utcTime').textContent = utcTime;
+}
+
+// Update the time every second
+setInterval(updateUTCTime, 1000);
+
+// Display time immediately when page loads
+updateUTCTime();
+
 /* This part of the code handles the toggling between
 login and signup form*/
-const loginTabButton = document.querySelector("#signinTab");
+const loginTabButton = document.querySelector("#loginTab");
 const signupTabButton = document.querySelector("#signupTab");
 
 loginTabButton.addEventListener("click", () => {
@@ -36,6 +51,35 @@ signupTabButton.addEventListener("click", () => {
     signupContainer.classList.remove("hidden");
 });
 
+/* This part handles toggling of staff login */
+const loginStaffCheck = document.querySelector("#loginStaff");
+const loginStaffShiftStartLabel = document.querySelector(".login-staff-start-time-label");
+const loginStaffShiftStartInput = document.querySelector(".login-staff-start-time");
+const loginStaffShiftEndLabel = document.querySelector(".login-staff-end-time-label");
+const loginStaffShiftEndInput = document.querySelector(".login-staff-end-time");
+const loginStaffStartTime = document.querySelector("#loginStaffStartTime");
+const loginStaffEndTime = document.querySelector("#loginStaffEndTime");
+
+loginStaffCheck.addEventListener("click", () => {
+    if (loginStaffCheck.checked) {
+        loginStaffShiftStartLabel.classList.remove("hidden");
+        loginStaffShiftStartInput.classList.remove("hidden");
+        loginStaffShiftEndLabel.classList.remove("hidden");
+        loginStaffShiftEndInput.classList.remove("hidden");
+
+        // Make the time required input
+        loginStaffStartTime.setAttribute("required", "");
+        loginStaffEndTime.setAttribute("required", "");
+    } else {
+        loginStaffShiftStartLabel.classList.add("hidden");
+        loginStaffShiftStartInput.classList.add("hidden");
+        loginStaffShiftEndLabel.classList.add("hidden");
+        loginStaffShiftEndInput.classList.add("hidden");
+
+        loginStaffStartTime.removeAttribute("required");
+        loginStaffEndTime.removeAttribute("required");
+    }
+});
 
 /* This part of the code handles the login submission form */
 loginForm.addEventListener("submit", () => {
@@ -45,12 +89,16 @@ loginForm.addEventListener("submit", () => {
     // Access form data
     const loginEmail = document.querySelector("#loginEmail").value;
     const loginPassword = document.querySelector("#loginPassword").value;
-    const loginStaff = document.querySelector("#loginStaff").checked;
+    const loginStaff = loginStaffCheck.checked;
+    const loginStaffStartShiftTime = loginStaffStartTime.value;
+    const loginStaffEndShiftTime = loginStaffEndTime.value;
 
-    API.post("api/signin/", {
+    API.post("api/login/", {
         loginEmail: loginEmail,
         loginPassword: loginPassword,
-        loginStaff: loginStaff
+        loginStaff: loginStaff,
+        loginStaffStartShiftTime: loginStaffStartShiftTime,
+        loginStaffEndShiftTime: loginStaffEndShiftTime
     }).then(response => {
         closeAuth(response, loginEmail, loginStaff);
     });
@@ -71,10 +119,27 @@ function closeAuth(response, loginEmail, isStaff) {
     if (response.ok) {
         authContainer.classList.add("hidden");
 
-        // Save the user email and staff/student status in the local storage
+        // Initialize socket for user when user successfully logs in
+        socket = io('http://localhost:3000');
+
+        // Listen for queue updates for socket connection
+        socket.on('queueUpdated', (updatedQueue) => {
+            updateQueueTable(updatedQueue, isStaff);
+        });
+
+        // Listen for Available TA updates for socket connection
+        socket.on('availableTAUpdated', (updatedAvailableTA) => {
+            updateAvailableTATable(updatedAvailableTA, isStaff);
+        });
+
+        // Check if the user logging in is the staff. If it is,
+        // let the backend know.
+        socket.emit('newAvailableTA', {});
+
+        // Save the user email in the local storage
         // so that we can use it as a data to send
         // when the user make request (submitting question
-        // as student or helping student as staff)
+        // as student)
         localStorage.setItem("userEmail", loginEmail);
 
         openStatus(isStaff);
@@ -86,7 +151,7 @@ function closeAuth(response, loginEmail, isStaff) {
         window.alert("Sign-in failed: User not found!");
         clearLoginArea();
     } else {
-        window.alert("Server Error: Please Try Again Later!")
+        window.alert("Server Error (Sign-in): Please Try Again Later!")
         clearLoginArea();
     }
 }
@@ -95,7 +160,6 @@ function clearLoginArea() {
     const loginEmailBox = document.querySelector("#loginEmail");
     const loginPasswordBox = document.querySelector("#loginPassword");
     const loginShowPasswordCheck = document.querySelector("#loginShowPassword");
-    const loginStaffCheck = document.querySelector("#loginStaff");
 
     loginEmailBox.value = "";
     loginPasswordBox.value = "";
@@ -110,16 +174,19 @@ function showProfileButton(userFirstLetter) {
 }
 
 function openStatus(isStaff) {
-    if (isStaff) {
-        // TODO: Load queue for staff version
+    // Load the queue first
+    API.post("api/getqueue", {})
+    .then(response => response.json())
+    .then(data => updateQueueTable(data.queue, isStaff));
 
+    // Load the Available TA next
+    API.post("api/getavailableta", {})
+    .then(response => response.json())
+    .then(data => updateAvailableTATable(data.available_ta, isStaff));
+
+    if (isStaff) {
         staffStatusContainer.classList.remove("hidden");
     } else {
-        // Load the queue first (student version)
-        API.post("api/getqueue", {})
-        .then(response => response.json())
-        .then(data => updateQueueTable(data.queue));
-
         studentStatusContainer.classList.remove("hidden");
     }
 }
@@ -213,7 +280,7 @@ signupForm.addEventListener("submit", () => {
         } else if (response.status === 409) {
             window.alert("Sign-up Failed: User Already Existed!");
         } else {
-            window.alert("Server Error: Please Try Again Later!");
+            window.alert("Server Error (Sign-up): Please Try Again Later!");
         }
 
         clearSignupArea();
@@ -238,6 +305,7 @@ function clearSignupArea() {
 /* This part of the code handles opening and closing modal
 when student clicks join office hour*/
 const joinOHButton = document.querySelector("#openModalButton")
+const closeModalX = document.querySelector("#closeModalX");
 function openModal() {
     modal.classList.remove("hidden");
 }
@@ -250,6 +318,7 @@ joinOHButton.addEventListener("click", () => {
     openModal();
 });
 
+closeModalX.addEventListener("click", () => {closeModal()});
 
 // Close the modal if the user clicks outside of it
 window.onclick = function(event) {
@@ -265,7 +334,6 @@ const darkModeButton = document.querySelector("#darkModeButton");
 const lightModeButton = document.querySelector("#lightModeButton");
 
 darkModeButton.addEventListener("click", () => {
-    console.log("hey");
     document.body.classList.add("darkmode");
 });
 
@@ -299,38 +367,105 @@ studentJoinForm.addEventListener("submit", () => {
     }).then(data => {
         window.alert("Question submitted: You are now enrolled in the queue");
         updateQueueTable(data.queue);
+
+        // Emit event when user joins the queue into the socket.io
+        // server so other user's will get their queue updated
+        socket.emit('joinQueue', localStorage.getItem("userEmail"));
     }).catch(error => {
-        window.alert("Server Error: Please Try Again Later!");
+        window.alert(`Server Error (Join Queue): Please Try Again Later!: ${error}`);
     });
 });
 
-function updateQueueTable(queueData) {
-    const studentSideQueueTable = document.querySelector("#studentSideQueueTable");
+function updateQueueTable(queueData, isStaff) {
+    const queueTable = isStaff ? document.querySelector("#staffSideQueueTable") : document.querySelector("#studentSideQueueTable");
+
+    // Make sure we empty the table first
+    while (queueTable.children.length > 1) {
+        queueTable.removeChild(queueTable.children[1]);
+    }
 
     queueData.forEach(row => {
-        const newTableRow = createQueueTableRow(row);
-        studentSideQueueTable.appendChild(newTableRow);
+        const newTableRow = createQueueTableRow(row, isStaff);
+        queueTable.appendChild(newTableRow);
     });
 }
 
 // This function is used to create
 // one row of the queue table entry
-function createQueueTableRow(row) {
+function createQueueTableRow(row, isStaff) {
     const newTableRow = document.createElement("tr");
     const newTableRowData = [
         row.queue_number,
         row.student_number,
         row.student_name,
-        row.request_time,
-        row.assign_time,
-        row.finish_time
+        formatTimeText(row.request_time),
+        formatTimeText(row.assign_time),
+        formatTimeText(row.finish_time)
     ];
-
-    console.log(row);
 
     for(let i = 0; i < 6; i++) {
         const newRowCell = document.createElement("td");
-        newRowCell.textContent = newTableRowData[i];
+        newRowCell.innerHTML = newTableRowData[i];
+
+        newTableRow.appendChild(newRowCell);
+    }
+
+    if (isStaff) {
+        const questionCell = document.createElement("td");
+        const helpButtonCell = document.createElement("td");
+
+        questionCell.textContent = row.question;
+        if (row.assign_time === null) {
+            helpButtonCell.innerHTML = `<button type="button">Help Student</button>`
+        }
+
+        newTableRow.appendChild(questionCell);
+        newTableRow.appendChild(helpButtonCell);
+    }
+
+    return newTableRow;
+}
+
+// Function to convert time from ISO 8601 format
+// (the format the DB uses) to a more readable format
+function formatTimeText(unformattedTime) {
+    if (unformattedTime === null) {
+        return ``;
+    }
+
+    let [date, time] = unformattedTime.split("T");
+    time = time.slice(0, -5);
+
+    return `${date} <br> ${time}`;
+}
+
+/* This part of the code handles updating the Available TA table */
+function updateAvailableTATable(availableTAData, isStaff) {
+    const availableTATable = isStaff ? document.querySelector("#staffAvailableTA") : document.querySelector("#studentAvailableTA");
+
+    // Make sure we empty the table first
+    while (availableTATable.children.length > 1) {
+        availableTATable.removeChild(availableTATable.children[1]);
+    }
+
+    availableTAData.forEach(row => {
+        const newTableRow = createAvailableTATableRow(row);
+        availableTATable.appendChild(newTableRow);
+    });
+}
+
+function createAvailableTATableRow(row) {
+    const newTableRow = document.createElement("tr");
+    const newTableRowData = [
+        row.staff_name,
+        row.status,
+        formatTimeText(row.shift_start_time),
+        formatTimeText(row.shift_end_time)
+    ];
+
+    for(let i = 0; i < 4; i++) {
+        const newRowCell = document.createElement("td");
+        newRowCell.innerHTML = newTableRowData[i];
 
         newTableRow.appendChild(newRowCell);
     }
