@@ -132,9 +132,15 @@ function closeAuth(response, loginEmail, isStaff) {
             updateAvailableTATable(updatedAvailableTA, isStaff);
         });
 
+        // Immediately emmits the user info for the backend
+        // so the backend can map the user info and the socket id
+        socket.emit('registerUser', loginEmail);
+
         // Check if the user logging in is the staff. If it is,
         // let the backend know.
-        socket.emit('newAvailableTA', {});
+        if (isStaff) {
+            socket.emit('newAvailableTA', {});
+        }
 
         // Save the user email in the local storage
         // so that we can use it as a data to send
@@ -416,7 +422,7 @@ function createQueueTableRow(row, isStaff) {
 
         questionCell.textContent = row.question;
         if (row.assign_time === null) {
-            helpButtonCell.innerHTML = `<button type="button">Help Student</button>`
+            helpButtonCell.innerHTML = `<button type="button" id=helpButtonQueue${row.queue_number} class="help-student-button">Help Student</button>`;
         }
 
         newTableRow.appendChild(questionCell);
@@ -452,6 +458,10 @@ function updateAvailableTATable(availableTAData, isStaff) {
         const newTableRow = createAvailableTATableRow(row);
         availableTATable.appendChild(newTableRow);
     });
+
+    // After building the table, make sure the action button is responsive
+    // TODO
+    updateHelpButtonListener();
 }
 
 function createAvailableTATableRow(row) {
@@ -471,4 +481,22 @@ function createAvailableTATableRow(row) {
     }
 
     return newTableRow;
+}
+
+/* This part of the code handles when TA decide to
+help a student */
+function updateHelpButtonListener() {
+    const allHelpButtons = document.querySelectorAll(".help-student-button");
+
+    allHelpButtons.forEach(currentHelpButton => {
+        // Use jquery to delete any click event listener
+        // on the button
+        $(currentHelpButton).off("click");
+
+        currentHelpButton.addEventListener("click", () => {
+            // Get the queue number from the button id
+            const queueNumber = currentHelpButton.id.substring(15);
+            window.alert("Successful: You are now helping queue number " + queueNumber);
+        })
+    });
 }
