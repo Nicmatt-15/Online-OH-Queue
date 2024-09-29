@@ -140,17 +140,7 @@ function closeAuth(response, loginEmail, isStaff) {
         // If the user logging in is a student, listen for
         // helpIncoming socket call.
         socket.on('helpIncoming', () => {
-            if (Notification.permission === "granted") {
-                // If permission is already granted
-                notifyUser();
-            } else if (Notification.permission !== "denied") {
-                // Ask the user for permission
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        notifyUser();
-                    }
-                });
-            }
+            window.alert("A TA is coming to help you now. Please be ready!");
         });
 
         // Listen for new student helped socket
@@ -193,12 +183,6 @@ function closeAuth(response, loginEmail, isStaff) {
         window.alert("Server Error (Sign-in): Please Try Again Later!")
         clearLoginArea();
     }
-}
-
-function notifyUser() {
-    const notification = new Notification("Alert", {
-        body: "A TA is coming to help you now. Please be ready!",
-    });
 }
 
 function clearLoginArea() {
