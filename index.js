@@ -384,7 +384,7 @@ studentJoinForm.addEventListener("submit", () => {
 
     closeModal();
 
-    API.post("api/joinqueue/", {
+    API.post("api/joinqueue", {
         userEmail: localStorage.getItem("userEmail"),
         studentQuestion: studentQuestion
     }).then(response => {
@@ -533,7 +533,7 @@ function updateHelpButtonListener() {
             const queueNumber = currentHelpButton.id.substring(15);
             window.alert("Successful: You are now helping queue number " + queueNumber);
 
-            API.post('api/helpstudent/', {
+            API.post('api/helpstudent', {
                 queueNumber: queueNumber,
                 staffEmail: localStorage.getItem("userEmail")
             }).then(response => {
@@ -560,7 +560,7 @@ function updateFinishButtonListener() {
             const queueNumber = currentFinishButton.id.substring(17);
             window.alert("Successful: You have finished helping queue number " + queueNumber);
 
-            API.post('api/finishhelpingstudent/', {
+            API.post('api/finishhelpingstudent', {
                 queueNumber: queueNumber,
                 staffEmail: localStorage.getItem("userEmail")
             }).then(response => {
