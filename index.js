@@ -2,7 +2,7 @@
 import FetchWrapper from "./fetch-wrapper.js";
 
 /* For any communication with our backend*/
-const BASE_URL = "https://onlineohqueuebackend.com/";
+const BASE_URL = "https://www.onlineohqueuebackend.com/";
 const API = new FetchWrapper(BASE_URL);
 let socket;
 
