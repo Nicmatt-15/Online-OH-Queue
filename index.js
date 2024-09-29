@@ -2,7 +2,7 @@
 import FetchWrapper from "./fetch-wrapper.js";
 
 /* For any communication with our backend*/
-const BASE_URL = "http://ec2-3-144-25-148.us-east-2.compute.amazonaws.com:3000/";
+const BASE_URL = "https://onlineohqueuebackend.com";
 const API = new FetchWrapper(BASE_URL);
 let socket;
 
