@@ -1,6 +1,10 @@
+html {
+    font-size: 16px;
+}
+
 html, body {
     overflow: hidden;
-    height: 100%;
+    height: 100vh;
 }
 
 body {
@@ -21,7 +25,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 20px;
+    padding: 0px 1rem;
     background-color: rgba(255,255,255, 0.8);
 }
 
@@ -63,7 +67,7 @@ body.darkmode .ionicon {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 85vh; /* Adjust this as necessary */
+    height: 75vh; /* Adjust this as necessary */
     padding: 10px;
     overflow: auto;
     flex-wrap: wrap; /* Ensure content wraps on smaller screens */
@@ -75,43 +79,8 @@ body.darkmode .ionicon {
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    padding: 20px; /* Add padding to avoid cutoffs */
+    padding: 1rem; /* Add padding to avoid cutoffs */
     box-sizing: border-box;
-}
-
-/* On smaller screens, reduce the height and ensure content is scrollable */
-@media (max-width: 600px) {
-    #modalAndContainer {
-        height: 100vh; /* Use full viewport height on smaller screens */
-        padding: 0;
-    }
-
-    #authContainer {
-        max-width: 100%; /* Ensure it takes full width */
-        padding: 10px; /* Reduce padding on smaller screens */
-    }
-
-    #loginContainer, 
-    #signupContainer {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-
-    /* Reduce the font size and button size for better visibility on small screens */
-    body, button {
-        font-size: 14px;
-    }
-
-    button {
-        padding: 8px 16px;
-    }
-
-    /* Ensure the modal scrolls when content overflows */
-    #loginContainer, 
-    #signupContainer {
-        overflow-y: auto;
-        max-height: 85vh;
-    }
 }
 
 .tab-buttons {
@@ -141,7 +110,7 @@ body.darkmode .tab-buttons button:hover {
 
 
 button {
-    padding: 10px 20px;
+    padding: 10px 1rem;
     font-size: 16px;
 }
 
@@ -215,7 +184,7 @@ body.darkmode #signupContainer {
 #myModal input[type="text"],
 #myModal select {
     width: auto;
-    padding: 20px;
+    padding: 1rem;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -225,7 +194,7 @@ body.darkmode #signupContainer {
 #signupContainer input[type="submit"],
 #myModal input[type="submit"] {
     width: auto;
-    padding: 20px;
+    padding: 1rem;
     background-color: #007bff;
     border: none;
     color: #fff;
@@ -251,8 +220,8 @@ body.darkmode #signupContainer {
     z-index: 1; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    width: 100vw; /* Full width */
+    height: 100vh; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
@@ -260,7 +229,7 @@ body.darkmode #signupContainer {
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
+    padding: 1rem;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
     text-align: center;
@@ -273,7 +242,7 @@ body.darkmode .modal-content {
 .close {
     color: #555555;
     float: right;
-    font-size: 28px;
+    font-size: 2rem;
     font-weight: bold;
 }
 
@@ -298,7 +267,7 @@ body.darkmode .close:focus {
 #studentStatusContainer,
 #staffStatusContainer {
     background-color: white;
-    padding: 20px;
+    padding: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     box-sizing: border-box;
@@ -312,19 +281,19 @@ body.darkmode #staffStatusContainer {
 
 #studentStatusContainer h1,
 #staffStatusContainer h1 {
-    margin: 0 0 20px;
+    margin: 0 0 1rem;
 }
 
 #studentStatusContainer button,
 #staffStatusContainer button {
-    padding: 10px 20px;
+    padding: 10px 1rem;
     background-color: #007bff;
     border: none;
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
 #studentStatusContainer button:hover,
@@ -347,7 +316,7 @@ button:disabled {
 .ta-available {
     background-color: #f9f9f9;
     padding: 15px;
-    margin: 20px;
+    margin: 1rem;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
@@ -367,7 +336,7 @@ body.darkmode .ta-available {
 }
 
 ol {
-    padding-left: 20px;
+    padding-left: 1rem;
 }
 
 ol li {
