@@ -92,7 +92,7 @@ loginForm.addEventListener("submit", () => {
     const loginStaffStartShiftTime = loginStaffStartTime.value;
     const loginStaffEndShiftTime = loginStaffEndTime.value;
 
-    API.post("api/login/", {
+    API.post("api/login", {
         loginEmail: loginEmail,
         loginPassword: loginPassword,
         loginStaff: loginStaff,
@@ -298,7 +298,7 @@ signupForm.addEventListener("submit", () => {
     const signupEmail = signupEmailForm.value;
     const signupPassword = signupPasswordForm.value;
 
-    API.post("api/signup/", {
+    API.post("api/signup", {
         signupName: signupName,
         signupStudentnum: signupStudentnum,
         signupEmail: signupEmail,
