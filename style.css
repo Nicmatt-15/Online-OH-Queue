@@ -58,17 +58,60 @@ body.darkmode .ionicon {
     visibility: hidden;
 }
 
+/* Make the container responsive */
 #modalAndContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 85vh;
+    height: 85vh; /* Adjust this as necessary */
+    padding: 10px;
+    overflow: auto;
+    flex-wrap: wrap; /* Ensure content wraps on smaller screens */
 }
 
+
+/* Adjust the auth container to be responsive */
 #authContainer {
     width: 100%;
-    max-width: 400px; /* Adjust this to your desired form width */
+    max-width: 400px;
     margin: 0 auto;
+    padding: 20px; /* Add padding to avoid cutoffs */
+    box-sizing: border-box;
+}
+
+/* On smaller screens, reduce the height and ensure content is scrollable */
+@media (max-width: 600px) {
+    #modalAndContainer {
+        height: 100vh; /* Use full viewport height on smaller screens */
+        padding: 0;
+    }
+
+    #authContainer {
+        max-width: 100%; /* Ensure it takes full width */
+        padding: 10px; /* Reduce padding on smaller screens */
+    }
+
+    #loginContainer, 
+    #signupContainer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    /* Reduce the font size and button size for better visibility on small screens */
+    body, button {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 8px 16px;
+    }
+
+    /* Ensure the modal scrolls when content overflows */
+    #loginContainer, 
+    #signupContainer {
+        overflow-y: auto;
+        max-height: 85vh;
+    }
 }
 
 .tab-buttons {
