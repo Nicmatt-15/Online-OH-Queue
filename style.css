@@ -289,6 +289,11 @@ body.darkmode #staffStatusContainer {
     background-color: #0056b3;
 }
 
+button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
 .status-stat-container {
     display: flex;
     flex-direction: row;

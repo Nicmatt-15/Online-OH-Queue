@@ -26,8 +26,7 @@ const profileButtonText = document.querySelector("#profileButton svg text");
 UTC time in the page header */
 function updateUTCTime() {
     const now = new Date();
-    const utcTime = now.toUTCString();
-    document.querySelector('#utcTime').textContent = utcTime;
+    document.querySelector('#nowTime').textContent = now;
 }
 
 // Update the time every second
@@ -101,6 +100,12 @@ loginForm.addEventListener("submit", () => {
         loginStaffEndShiftTime: loginStaffEndShiftTime
     }).then(response => {
         closeAuth(response, loginEmail, loginStaff);
+        return response.json();
+    }).then(data => {
+        // Storing the user id to be used later for the logic
+        // of staff help button, help button disabled, and finish
+        // button
+        localStorage.setItem("userID", data.user_number);
     });
 })
 
@@ -132,6 +137,34 @@ function closeAuth(response, loginEmail, isStaff) {
             updateAvailableTATable(updatedAvailableTA, isStaff);
         });
 
+        // If the user logging in is a student, listen for
+        // helpIncoming socket call.
+        socket.on('helpIncoming', () => {
+            if (Notification.permission === "granted") {
+                // If permission is already granted
+                notifyUser();
+            } else if (Notification.permission !== "denied") {
+                // Ask the user for permission
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        notifyUser();
+                    }
+                });
+            }
+        });
+
+        // Listen for new student helped socket
+        socket.on('newStudentHelped', (data) => {
+            updateQueueTable(data.latestQueue, isStaff);
+            updateAvailableTATable(data.latestAvailableTA, isStaff);
+        });
+
+        // Listen for new student finished helped socket
+        socket.on('newStudentFinish', (data) => {
+            updateQueueTable(data.latestQueue, isStaff);
+            updateAvailableTATable(data.latestAvailableTA, isStaff);
+        });
+
         // Immediately emmits the user info for the backend
         // so the backend can map the user info and the socket id
         socket.emit('registerUser', loginEmail);
@@ -160,6 +193,12 @@ function closeAuth(response, loginEmail, isStaff) {
         window.alert("Server Error (Sign-in): Please Try Again Later!")
         clearLoginArea();
     }
+}
+
+function notifyUser() {
+    const notification = new Notification("Alert", {
+        body: "A TA is coming to help you now. Please be ready!",
+    });
 }
 
 function clearLoginArea() {
@@ -394,6 +433,11 @@ function updateQueueTable(queueData, isStaff) {
         const newTableRow = createQueueTableRow(row, isStaff);
         queueTable.appendChild(newTableRow);
     });
+
+    // After building the table, make sure the action button is responsive
+    // TODO
+    updateHelpButtonListener(isStaff);
+    updateFinishButtonListener(isStaff);
 }
 
 // This function is used to create
@@ -421,8 +465,15 @@ function createQueueTableRow(row, isStaff) {
         const helpButtonCell = document.createElement("td");
 
         questionCell.textContent = row.question;
+        // TODO: need logic for finish button
         if (row.assign_time === null) {
             helpButtonCell.innerHTML = `<button type="button" id=helpButtonQueue${row.queue_number} class="help-student-button">Help Student</button>`;
+        } else {
+            if (row.staff_number === Number(localStorage.getItem("userID"))) {
+                helpButtonCell.innerHTML = `<button type="button" id=finishButtonQueue${row.queue_number} class="finish-helping-button">Finish Helping</button>`
+            } else {
+                helpButtonCell.innerHTML = `<button type="button" id=helpButtonQueue${row.queue_number} class="help-student-button" disabled>Help Student</button>`;
+            }
         }
 
         newTableRow.appendChild(questionCell);
@@ -439,7 +490,12 @@ function formatTimeText(unformattedTime) {
         return ``;
     }
 
-    let [date, time] = unformattedTime.split("T");
+    // Unformatted time is in UTC
+    const unformattedTimeObject = new Date(unformattedTime);
+    const serverOffsetInMinutes = unformattedTimeObject.getTimezoneOffset();
+    const convertedTimeObect = new Date(unformattedTimeObject.getTime() - serverOffsetInMinutes * 60000);
+
+    let [date, time] = convertedTimeObect.toISOString().split("T");
     time = time.slice(0, -5);
 
     return `${date} <br> ${time}`;
@@ -458,10 +514,6 @@ function updateAvailableTATable(availableTAData, isStaff) {
         const newTableRow = createAvailableTATableRow(row);
         availableTATable.appendChild(newTableRow);
     });
-
-    // After building the table, make sure the action button is responsive
-    // TODO
-    updateHelpButtonListener();
 }
 
 function createAvailableTATableRow(row) {
@@ -491,12 +543,48 @@ function updateHelpButtonListener() {
     allHelpButtons.forEach(currentHelpButton => {
         // Use jquery to delete any click event listener
         // on the button
-        $(currentHelpButton).off("click");
+        // $(currentHelpButton).off("click");
 
         currentHelpButton.addEventListener("click", () => {
             // Get the queue number from the button id
             const queueNumber = currentHelpButton.id.substring(15);
             window.alert("Successful: You are now helping queue number " + queueNumber);
+
+            API.post('api/helpstudent/', {
+                queueNumber: queueNumber,
+                staffEmail: localStorage.getItem("userEmail")
+            }).then(response => {
+                if (!response.ok) {
+                    window.alert("Server error during helping student");
+                }
+            });
+        })
+    });
+}
+
+/* This part of the code handles when a TA decide they have
+finished helping a student */
+function updateFinishButtonListener() {
+    const allFinishButtons = document.querySelectorAll(".finish-helping-button");
+
+    allFinishButtons.forEach(currentFinishButton => {
+        // Use jquery to delete any click event listener
+        // on the button
+        // $(currentFinishButton).off("click");
+
+        currentFinishButton.addEventListener("click", () => {
+            // Get the queue number from the button id
+            const queueNumber = currentFinishButton.id.substring(17);
+            window.alert("Successful: You have finished helping queue number " + queueNumber);
+
+            API.post('api/finishhelpingstudent/', {
+                queueNumber: queueNumber,
+                staffEmail: localStorage.getItem("userEmail")
+            }).then(response => {
+                if (!response.ok) {
+                    window.alert("Server error during finish helping student");
+                }
+            });
         })
     });
 }
