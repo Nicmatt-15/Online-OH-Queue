@@ -2,7 +2,7 @@
 import FetchWrapper from "./fetch-wrapper.js";
 
 /* For any communication with our backend*/
-const BASE_URL = "http://localhost:3000/";
+const BASE_URL = "http://ec2-3-144-25-148.us-east-2.compute.amazonaws.com:3000/";
 const API = new FetchWrapper(BASE_URL);
 let socket;
 
@@ -125,7 +125,7 @@ function closeAuth(response, loginEmail, isStaff) {
         authContainer.classList.add("hidden");
 
         // Initialize socket for user when user successfully logs in
-        socket = io('http://localhost:3000');
+        socket = io(BASE_URL);
 
         // Listen for queue updates for socket connection
         socket.on('queueUpdated', (updatedQueue) => {
@@ -450,10 +450,9 @@ function createQueueTableRow(row, isStaff) {
         row.student_name,
         formatTimeText(row.request_time),
         formatTimeText(row.assign_time),
-        formatTimeText(row.finish_time)
     ];
 
-    for(let i = 0; i < 6; i++) {
+    for(let i = 0; i < 5; i++) {
         const newRowCell = document.createElement("td");
         newRowCell.innerHTML = newTableRowData[i];
 
